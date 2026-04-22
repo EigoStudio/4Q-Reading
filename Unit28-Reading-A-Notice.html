@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <title>英検4級：28章 お知らせの読み方【完全版】</title>
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --error-red: #dc3545;
+            --bg-gray: #f0f2f5;
+            --eiken-serif: 'Noto Serif', 'Times New Roman', serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            margin: 0; padding: 20px; font-size: 18px;
+        }
+
+        .container {
+            background-color: white; width: 95%; max-width: 900px;
+            padding: 30px; box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 12px; position: relative;
+        }
+
+        h1 { text-align: center; color: #333; font-size: 1.8rem; border-bottom: 3px solid var(--primary-blue); padding-bottom: 15px; }
+
+        .tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 15px; }
+        .tab-btn {
+            padding: 12px 30px; cursor: pointer; border: 2px solid var(--primary-blue);
+            background: white; color: var(--primary-blue); border-radius: 30px; font-weight: bold; transition: 0.3s;
+        }
+        .tab-btn.active { background: var(--primary-blue); color: white; }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        .set-container { margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 10px; }
+        .set-title { font-weight: bold; color: var(--primary-blue); margin-bottom: 10px; border-left: 5px solid var(--primary-blue); padding-left: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 8px 10px; vertical-align: middle; border-bottom: 1px solid #eee; }
+        
+        .jp-column { width: 30%; font-size: 0.95rem; font-weight: bold; text-align: right; padding-right: 15px; }
+        .answer-column { width: 35%; border-bottom: 2px solid var(--primary-blue); position: relative; }
+        .choice-column { width: 35%; } 
+        
+        .drop-zone, .choice-slot { 
+            min-height: 48px; display: flex; align-items: center; justify-content: flex-start; 
+            background: #fafafa; border-radius: 5px; padding-left: 5px;
+        }
+
+        .word-chip {
+            padding: 5px 12px; background: white; border: 2px solid var(--primary-blue);
+            border-radius: 8px; cursor: pointer; font-family: 'Comic Neue', sans-serif;
+            font-weight: bold; font-size: 1.1rem; box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            white-space: nowrap; margin: 2px;
+        }
+        .word-chip.selected { background: #ffeb3b; border-color: #fbc02d; }
+        .result-mark { position: absolute; right: -25px; top: 10px; font-size: 1.5rem; font-weight: bold; color: var(--error-red); }
+
+        #notice-sticky {
+            position: sticky; top: 10px; background: #fff; border: 2px solid #333;
+            padding: 20px; margin-bottom: 30px; font-family: var(--eiken-serif);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 10;
+        }
+        .notice-title { text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
+        .notice-body { font-size: 1.4rem; line-height: 1.4; text-align: center; }
+
+        .question-box { display: none; padding: 25px; background: #f9f9f9; border-radius: 10px; border: 1px solid #ddd; }
+        .question-box.active { display: block; }
+        .q-text { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; text-align: center; }
+        
+        .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .opt-btn {
+            padding: 15px; border: 2px solid #ccc; background: white; border-radius: 8px;
+            cursor: pointer; text-align: center; font-size: 1.2rem; transition: 0.2s;
+            font-family: var(--eiken-serif); font-weight: bold;
+        }
+        .opt-btn:hover { background: #e3f2fd; border-color: var(--primary-blue); }
+
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+
+        @media print {
+            @page { size: A4; margin: 15mm 20mm; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; width: 100%; padding: 0; }
+            .tabs, .tab-btn, #reading, button, .result-mark, #confetti-canvas { display: none !important; }
+            #vocab { display: block !important; }
+            h1 { font-size: 22pt; border-bottom: 2pt solid black; margin-bottom: 20pt; }
+            .set-container { border: none; margin-bottom: 15pt; padding: 0; page-break-inside: avoid; }
+            .set-title { color: black; border-left: 4pt solid black; font-size: 14pt; margin-bottom: 8pt; padding-left: 10pt; }
+            table { width: 100%; }
+            td { border-bottom: 1px solid #ccc; padding: 10pt 5pt; }
+            .jp-column { width: 30%; font-size: 11pt; text-align: left; }
+            .answer-column { width: 45%; border-bottom: 1pt solid black !important; }
+            .choice-column { width: 25%; text-align: right; display: table-cell !important; }
+            .word-chip { border: 1px solid #000 !important; font-size: 10pt !important; color: black !important; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+    <h1>28章 お知らせの読み方</h1>
+
+    <div class="tabs">
+        <div class="tab-btn active" onclick="switchTab('vocab')">1. 重要単語</div>
+        <div class="tab-btn" onclick="switchTab('reading')">2. お知らせ読解</div>
+    </div>
+
+    <div id="vocab" class="content-section active">
+        <div id="vocab-root"></div>
+        <div style="text-align:center; margin-top:20px;">
+            <button onclick="checkVocab()" style="background:var(--primary-blue); color:white; border:none; padding:15px 40px; border-radius:30px; cursor:pointer; font-weight:bold; font-size:1.2rem;">答え合わせ</button>
+        </div>
+    </div>
+
+    <div id="reading" class="content-section">
+        <div id="notice-sticky">
+            <div class="notice-title">Summer Sale</div>
+            <div class="notice-body">
+                The Dewy Museum Gift Shop will have a big sale.<br>
+                <strong>Date:</strong> August 1 to August 14<br>
+                <strong>Time:</strong> 10:00 a.m. to 4:30 p.m.<br><br>
+                Posters and post cards will be 30% off.<br>
+                Also, the first 20 customers will get a <strong>free</strong> museum ticket.<br>
+                <em>Don't miss this chance!</em>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div id="q1" class="question-box active">
+                <div class="q-text">(1) How long is the sale?</div>
+                <div class="options" id="opt-container-1"></div>
+            </div>
+            <div id="q2" class="question-box">
+                <div class="q-text">(2) How many people will get a free museum ticket?</div>
+                <div class="options" id="opt-container-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const vocabGroups = [
+        {
+            title: "グループ1：お知らせの重要ワード I",
+            items: [
+                { jp: "日付、期日", en: ["Date"] },
+                { jp: "場所、会場", en: ["Place"] },
+                { jp: "集合場所", en: ["Where to meet"] },
+                { jp: "開店時刻", en: ["Open"] },
+                { jp: "閉店時刻", en: ["Close"] },
+                { jp: "〜から…まで", en: ["from ~ to ..."] }
+            ]
+        },
+        {
+            title: "グループ2：お知らせの重要ワード II",
+            items: [
+                { jp: "営業時間", en: ["opening hours"] },
+                { jp: "集合場所", en: ["meeting place"] },
+                { jp: "値段、費用", en: ["cost"] },
+                { jp: "夏のセール", en: ["summer sale"] },
+                { jp: "午前", en: ["a.m."] },
+                { jp: "午後", en: ["p.m."] }
+            ]
+        },
+        {
+            title: "グループ3：読解に必須の表現",
+            items: [
+                { jp: "最初の", en: ["first"] },
+                { jp: "顧客、お客さん", en: ["customer"] },
+                { jp: "無料の", en: ["free"] },
+                { jp: "機会、チャンス", en: ["chance"] },
+                { jp: "週", en: ["week"] },
+                { jp: "20", en: ["twenty"] },
+                { jp: "30", en: ["thirty"] },
+                { jp: "ポスター", en: ["poster"] },
+                { jp: "はがき", en: ["post card"] },
+                { jp: "8月", en: ["August"] },
+                { jp: "〜をお見逃しなく", en: ["Don't miss ~"] }
+            ]
+        }
+    ];
+
+    function shuffle(array) {
+        let result = [...array];
+        for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+    }
+
+    let selectedChip = null;
+
+    function renderVocab() {
+        const root = document.getElementById('vocab-root');
+        root.innerHTML = '';
+        
+        vocabGroups.forEach((group) => {
+            const container = document.createElement('div');
+            container.className = 'set-container';
+            container.innerHTML = `<div class="set-title">${group.title}</div>`;
+            const table = document.createElement('table');
+            
+            const rows = shuffle(group.items);
+            const chipTexts = shuffle(group.items.map(item => item.en[0]));
+
+            rows.forEach((item, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="jp-column">${item.jp}</td>
+                    <td class="answer-column" data-correct='${JSON.stringify(item.en)}'>
+                        <div class="drop-zone" onclick="handleZoneClick(event)"></div>
+                        <span class="result-mark"></span>
+                    </td>
+                    <td class="choice-column">
+                        <div class="choice-slot" onclick="handleZoneClick(event)">
+                            <div class="word-chip" onclick="handleChipClick(event)">${chipTexts[i]}</div>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+            container.appendChild(table);
+            root.appendChild(container);
+        });
+    }
+
+    // 読解問題の選択肢をシャッフルして描画
+    function renderReadingQuestions() {
+        const q1Opts = [
+            { text: "One week", val: 1 },
+            { text: "Two weeks", val: 2 },
+            { text: "Three weeks", val: 3 },
+            { text: "Four weeks", val: 4 }
+        ];
+        const q2Opts = [
+            { text: "One", val: 1 },
+            { text: "Twelve", val: 2 },
+            { text: "Twenty", val: 3 },
+            { text: "Thirty", val: 4 }
+        ];
+
+        const shuffledQ1 = shuffle(q1Opts);
+        const shuffledQ2 = shuffle(q2Opts);
+
+        const container1 = document.getElementById('opt-container-1');
+        const container2 = document.getElementById('opt-container-2');
+
+        container1.innerHTML = shuffledQ1.map(opt => 
+            `<button class="opt-btn" onclick="checkReading(1, ${opt.val})">${opt.text}</button>`
+        ).join('');
+        container2.innerHTML = shuffledQ2.map(opt => 
+            `<button class="opt-btn" onclick="checkReading(2, ${opt.val})">${opt.text}</button>`
+        ).join('');
+    }
+
+    function handleChipClick(e) {
+        e.stopPropagation();
+        if (selectedChip) selectedChip.classList.remove('selected');
+        selectedChip = e.currentTarget;
+        selectedChip.classList.add('selected');
+    }
+
+    function handleZoneClick(e) {
+        const zone = e.currentTarget;
+        if (selectedChip) {
+            if (zone.children.length > 0 && !zone.classList.contains('choice-slot')) {
+                const existing = zone.children[0];
+                selectedChip.parentNode.appendChild(existing);
+            }
+            zone.appendChild(selectedChip);
+            selectedChip.classList.remove('selected');
+            selectedChip = null;
+            const mark = zone.parentNode.querySelector('.result-mark');
+            if(mark) mark.innerText = "";
+        }
+    }
+
+    function checkVocab() {
+        let currentCorrectCount = 0;
+        const totalItems = document.querySelectorAll('.answer-column').length;
+
+        document.querySelectorAll('.answer-column').forEach(col => {
+            const corrects = JSON.parse(col.getAttribute('data-correct'));
+            const userAns = col.innerText.trim();
+            const mark = col.querySelector('.result-mark');
+            
+            // 判定ロジック：記号を無視して英数字のみで比較
+            const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const userNormalized = normalize(userAns);
+            const isMatch = userAns !== "" && corrects.some(c => normalize(c) === userNormalized);
+
+            if (isMatch) {
+                mark.innerText = "";
+                col.style.backgroundColor = "#e8f5e9";
+                currentCorrectCount++;
+            } else {
+                mark.innerText = "❌";
+                col.style.backgroundColor = "transparent";
+            }
+        });
+
+        // 遅延なしで確実に点数を確認
+        if (currentCorrectCount === totalItems) {
+            triggerConfetti();
+        }
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function checkReading(qNum, choice) {
+        const answers = { 1: 2, 2: 3 };
+        if (choice === answers[qNum]) {
+            if (qNum === 1) {
+                document.getElementById('q1').classList.remove('active');
+                document.getElementById('q2').classList.add('active');
+            } else {
+                triggerConfetti();
+            }
+        } else {
+            alert("Check the notice again!");
+        }
+    }
+
+    function triggerConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = Array.from({ length: 150 }, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
+            r: Math.random() * 6 + 4, d: Math.random() * 150,
+            color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+            tilt: Math.random() * 10, tiltAngle: 0, tiltAngleInc: Math.random() * 0.07 + 0.05
+        }));
+        
+        let animationFrame;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p) => {
+                p.tiltAngle += p.tiltAngleInc; p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2; p.tilt = Math.sin(p.tiltAngle) * 15;
+                ctx.beginPath(); ctx.lineWidth = p.r; ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + p.tilt + p.r / 2, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2); ctx.stroke();
+            });
+            animationFrame = requestAnimationFrame(draw);
+        }
+        draw();
+        setTimeout(() => { 
+            cancelAnimationFrame(animationFrame);
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        }, 5000);
+    }
+
+    window.onload = () => {
+        renderVocab();
+        renderReadingQuestions();
+    };
+</script>
+
+</body>
+</html>

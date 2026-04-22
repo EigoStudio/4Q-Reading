@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英検4級 2024-1-4B Weekend Plans</title>
+    <style>
+        :root {
+            --primary-blue: #0288d1;
+            --bg-color: #f0f7ff;
+            --border-color: #b3e5fc;
+            --success-green: #4caf50;
+            --beth-color: #fff0f6;
+            --cathy-color: #f0f5ff;
+        }
+        body { font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; max-width: 850px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary-blue); text-align: center; font-size: 1.4rem; margin-bottom: 20px; }
+        
+        .section-nav { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .nav-btn { padding: 10px 20px; border: 2px solid var(--primary-blue); background: white; color: var(--primary-blue); border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-btn.active { background: var(--primary-blue); color: white; }
+
+        .progress-container { width: 100%; background: #eee; border-radius: 10px; margin-bottom: 20px; height: 8px; }
+        .progress-bar { height: 100%; background: var(--primary-blue); width: 0%; transition: width 0.3s; }
+        
+        .category-tag { background: #666; color: white; padding: 3px 10px; border-radius: 5px; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; }
+        .question-display { font-size: 1.5rem; text-align: center; margin-bottom: 25px; padding: 20px; background: #f9f9f9; border-radius: 15px; border-bottom: 4px solid var(--primary-blue); }
+
+        .email-box { padding: 15px; border-radius: 10px; margin-bottom: 15px; font-family: 'Times New Roman', serif; border: 1px solid #ddd; position: relative; line-height: 1.4; }
+        .email-box::before { content: attr(data-label); position: absolute; top: -10px; left: 10px; background: white; padding: 0 5px; font-size: 0.8rem; font-weight: bold; color: #666; }
+        .beth-email { background: var(--beth-color); border-color: #ffadd2; }
+        .cathy-email { background: var(--cathy-color); border-color: #adc6ff; }
+        .email-header { font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 0.9rem; padding-bottom: 5px; }
+
+        .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+        .choice-card-btn { padding: 18px; border: 2px solid var(--border-color); background: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.2s; }
+        .choice-card-btn:hover { background-color: #e1f5fe; }
+        .choice-card-btn.selected { background: var(--border-color); border-color: var(--primary-blue); }
+
+        .action-btn { padding: 15px; font-size: 1.1rem; border-radius: 35px; cursor: pointer; border: none; font-weight: bold; margin: 10px auto; display: block; color: white; width: 100%; }
+        @media (max-width: 600px) { .choice-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>英検4級 2024-1-4B<br>Weekend Plans</h1>
+    
+    <div class="section-nav">
+        <button class="nav-btn active" id="btn-vocab" onclick="switchSection('vocab')">Vocab ゲーム</button>
+        <button class="nav-btn" id="btn-reading" onclick="switchSection('reading')">Reading 問題</button>
+    </div>
+
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    
+    <div id="game-content"></div>
+</div>
+
+<script>
+    const vocabData = [
+        { cat: "名詞", q: "weekend", choices: ["週末", "平日", "予定", "天気"], ans: "週末" },
+        { cat: "名詞", q: "plans", choices: ["計画・予定", "祭り", "帽子", "天気"], ans: "計画・予定" },
+        { cat: "名詞", q: "festival", choices: ["祭り", "映画", "天気", "週末"], ans: "祭り" },
+        { cat: "名詞", q: "weather", choices: ["天気", "祭り", "予定", "週末"], ans: "天気" },
+        { cat: "名詞", q: "cap", choices: ["帽子(ふちなし)", "傘", "予定", "計画"], ans: "帽子(ふちなし)" },
+        { cat: "動詞・形容詞", q: "invite", choices: ["招待する", "持ってくる", "考える", "待つ"], ans: "招待する" },
+        { cat: "動詞・形容詞", q: "excited", choices: ["わくわくして", "疲れて", "怒って", "忙しくて"], ans: "わくわくして" },
+        { cat: "動詞・形容詞", q: "bring", choices: ["持ってくる", "誘う", "考える", "必要とする"], ans: "持ってくる" },
+        { cat: "動詞・形容詞", q: "need", choices: ["必要とする", "持ってくる", "待つ", "思う"], ans: "必要とする" },
+        { cat: "動詞・形容詞", q: "should", choices: ["〜すべきだ", "〜できる", "〜したい", "〜かもしれない"], ans: "〜すべきだ" },
+        { cat: "フレーズ", q: "go hiking", choices: ["ハイキングに行く", "バーベキューをする", "映画を見る", "キャンプに行く"], ans: "ハイキングに行く" },
+        { cat: "フレーズ", q: "have a barbecue", choices: ["バーベキューをする", "映画を見る", "ハイキングに行く", "夕食を食べる"], ans: "バーベキューをする" },
+        { cat: "フレーズ", q: "can't wait", choices: ["待ちきれない", "待てない", "待つべきではない", "待ちたくない"], ans: "待ちきれない" },
+        { cat: "フレーズ", q: "What do you think?", choices: ["どう思う？", "何してるの？", "何がほしい？", "どこに行く？"], ans: "どう思う？" },
+        { cat: "フレーズ", q: "on a Saturday evening", choices: ["土曜日の夜に", "土曜日の午後に", "土曜日の朝に", "日曜日の夜に"], ans: "土曜日の夜に" },
+        { cat: "フレーズ", q: "a lot", choices: ["たくさん", "少し", "時々", "全然"], ans: "たくさん" }
+    ];
+
+    const readingData = [
+        { q: "What will Beth and Cathy do on Saturday evening?", choices: ["Go hiking.", "Have a barbecue.", "Go to a festival.", "Watch a movie."], ans: "Have a barbecue." },
+        { q: "On Sunday, what does Cathy think they can do?", choices: ["Have a barbecue.", "Go hiking.", "Bring an umbrella.", "Go to a festival."], ans: "Go to a festival." },
+        { q: "What should Beth bring this weekend?", choices: ["Her cap.", "An umbrella.", "A movie ticket.", "A sweater."], ans: "Her cap." }
+    ];
+
+    let currentSection = 'vocab';
+    let vocabIdx = 0, readingIdx = 0, score = 0, selectedChoice = null;
+
+    const emailHtml = `
+        <div class="email-box beth-email" data-label="Email 1">
+            <div class="email-header">From: Beth / Subject: Weekend plans</div>
+            Hi Cathy, Thank you for inviting me to your house this weekend! I'm excited about going hiking on Saturday afternoon and having a barbecue on Saturday evening. What should we do on Sunday? Also, does it rain a lot in your town? Should I bring an umbrella? I can't wait to see you.
+        </div>
+        <div class="email-box cathy-email" data-label="Email 2">
+            <div class="email-header">From: Cathy / Subject: This weekend</div>
+            Hi Beth, We can go to the festival in my town on Sunday. We can also go and watch a movie on Sunday evening. What do you think? The weather will be hot and sunny all weekend, so you should bring your cap. You'll need it when we go hiking.
+        </div>
+    `;
+
+    function switchSection(sec) {
+        currentSection = sec;
+        vocabIdx = 0; readingIdx = 0; score = 0;
+        document.getElementById('btn-vocab').classList.toggle('active', sec === 'vocab');
+        document.getElementById('btn-reading').classList.toggle('active', sec === 'reading');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const content = document.getElementById('game-content');
+        content.innerHTML = "";
+        selectedChoice = null;
+
+        let q, total;
+        if (currentSection === 'vocab') {
+            q = vocabData[vocabIdx];
+            total = vocabData.length;
+            content.innerHTML = `
+                <span class="category-tag">${q.cat}</span>
+                <div class="question-display">${q.q}</div>
+                <div id="ui-area"></div>
+            `;
+        } else {
+            q = readingData[readingIdx];
+            total = readingData.length;
+            content.innerHTML = `
+                ${emailHtml}
+                <div class="question-display" style="font-size:1.1rem; text-align:left; border-bottom:none; background:#eee;">${q.q}</div>
+                <div id="ui-area"></div>
+            `;
+        }
+
+        renderChoices(q.choices);
+        const currentNum = currentSection === 'vocab' ? vocabIdx : readingIdx;
+        document.getElementById('progressBar').style.width = `${(currentNum / total) * 100}%`;
+        
+        const checkBtn = document.createElement('button');
+        checkBtn.id = "checkBtn"; checkBtn.className = "action-btn";
+        checkBtn.style.display = "none"; checkBtn.style.background = "#2e7d32";
+        checkBtn.textContent = "回答をチェック";
+        checkBtn.onclick = handleCheck;
+        content.appendChild(checkBtn);
+    }
+
+    function renderChoices(choices) {
+        const ui = document.getElementById('ui-area');
+        const grid = document.createElement('div'); grid.className = 'choice-grid';
+        const shuffled = [...choices].sort(() => Math.random() - 0.5);
+        shuffled.forEach(c => {
+            const btn = document.createElement('button'); btn.className = 'choice-card-btn'; btn.textContent = c;
+            btn.onclick = () => {
+                document.querySelectorAll('.choice-card-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected'); selectedChoice = c;
+                document.getElementById('checkBtn').style.display = "block";
+            };
+            grid.appendChild(btn);
+        });
+        ui.appendChild(grid);
+    }
+
+    function handleCheck() {
+        const q = currentSection === 'vocab' ? vocabData[vocabIdx] : readingData[readingIdx];
+        if (selectedChoice === q.ans) {
+            score++;
+            showFeedback();
+        } else {
+            alert("Try again! もう一度選んでみてね。");
+        }
+    }
+
+    function showFeedback() {
+        const content = document.getElementById('game-content');
+        const nextBtn = document.createElement('button');
+        nextBtn.className = "action-btn"; 
+        nextBtn.style.background = "#0288d1"; // 直接色を指定して修正
+        nextBtn.textContent = "次の問題へ";
+        nextBtn.onclick = () => {
+            if (currentSection === 'vocab') {
+                vocabIdx++; if (vocabIdx < vocabData.length) loadQuestion(); else showFinalResult();
+            } else {
+                readingIdx++; if (readingIdx < readingData.length) loadQuestion(); else showFinalResult();
+            }
+        };
+        document.getElementById('ui-area').innerHTML = `<h2 style="color:var(--success-green); text-align:center;">Correct! ✨</h2>`;
+        document.getElementById('checkBtn').style.display = "none";
+        content.appendChild(nextBtn);
+    }
+
+    function showFinalResult() {
+        const total = currentSection === 'vocab' ? vocabData.length : readingData.length;
+        document.getElementById('progressBar').style.width = "100%";
+        document.getElementById('game-content').innerHTML = `
+            <div style="text-align:center; padding: 20px;">
+                <h2 style="font-size:2rem;">🎉 Section Clear!</h2>
+                <p style="font-size:1.5rem;">Score: ${score} / ${total}</p>
+                <div style="background:#f0f7ff; padding:20px; border-radius:15px; margin-top:20px;">
+                    <h3>Tamaki先生に報告する</h3>
+                    <input type="text" id="userName" placeholder="名前を入力" style="padding:10px; width:80%; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;"><br>
+                    <button class="action-btn" style="background:#ef6c00;" onclick="sendEmailReport()">メールで報告 📧</button>
+                </div>
+                <button class="action-btn" style="background:#0288d1; margin-top:20px;" onclick="location.reload()">最初から解き直す</button>
+            </div>
+        `;
+    }
+
+    function sendEmailReport() {
+        const name = document.getElementById('userName').value || "生徒";
+        const total = currentSection === 'vocab' ? vocabData.length : readingData.length;
+        const subject = encodeURIComponent(`英検4級 Weekend Plans (${currentSection}) 結果`);
+        const body = encodeURIComponent(`Tamaki先生へ\n\n「Weekend Plans」の${currentSection}セクションを完了しました。\n\n名前: ${name}\nスコア: ${score} / ${total}`);
+        window.location.href = `mailto:tamaki@eigostudio-stepforward.com?subject=${subject}&body=${body}`;
+    }
+
+    window.onload = loadQuestion;
+</script>
+</body>
+</html>
