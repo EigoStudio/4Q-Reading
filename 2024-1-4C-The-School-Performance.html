@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英検4級 2024-1-4C The School Performance</title>
+    <style>
+        :root {
+            --primary-blue: #0288d1;
+            --bg-color: #f0f7ff;
+            --border-color: #b3e5fc;
+            --success-green: #4caf50;
+        }
+        body { font-family: "Hiragino Maru Gothic ProN", sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        /* 横幅を1000pxに拡大 */
+        .container { background: white; max-width: 1000px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); box-sizing: border-box; }
+        h1 { color: var(--primary-blue); text-align: center; font-size: 1.3rem; margin-bottom: 20px; }
+        
+        .section-nav { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .nav-btn { padding: 10px 15px; border: 2px solid var(--primary-blue); background: white; color: var(--primary-blue); border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.9rem; }
+        .nav-btn.active { background: var(--primary-blue); color: white; }
+
+        .progress-container { width: 100%; background: #eee; border-radius: 10px; margin-bottom: 20px; height: 8px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary-blue); width: 0%; transition: width 0.3s; }
+        
+        .question-display { font-size: 1.2rem; text-align: center; margin-bottom: 25px; padding: 20px; background: #f9f9f9; border-radius: 15px; border-bottom: 4px solid var(--primary-blue); position: relative; line-height: 1.5; color: #000; }
+        .speaker-btn { background: #eee; border: 1px solid #ccc; font-size: 1.2rem; cursor: pointer; margin-left: 10px; border-radius: 50%; width: 35px; height: 35px; vertical-align: middle; }
+
+        /* 本文エリアのフォントをさらに強調 */
+        .passage-box { padding: 25px; background: #fffde7; border-radius: 10px; border: 2px solid #ffe082; margin-bottom: 15px; line-height: 1.7; font-size: 1.4rem; color: #000; font-weight: 600; }
+        
+        .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+        .choice-card-btn { padding: 18px; border: 2px solid var(--border-color); background: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.2s; color: #333; }
+        .choice-card-btn:hover { background-color: #e1f5fe; }
+        .choice-card-btn.selected { background: var(--border-color); border-color: var(--primary-blue); }
+
+        .action-btn { padding: 15px; font-size: 1.1rem; border-radius: 35px; cursor: pointer; border: none; font-weight: bold; margin: 15px auto; display: block; color: white; width: 100%; }
+        .report-btn { background: #ef6c00; margin-top: 10px; }
+        .correct-text { color: var(--success-green); text-align: center; font-weight: bold; font-size: 1.6rem; margin: 10px 0; }
+        @media (max-width: 600px) { .choice-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>英検4級 2024-1-4C<br>The School Performance</h1>
+    
+    <div class="section-nav">
+        <button class="nav-btn active" id="btn-vocab" onclick="switchSection('vocab')">1. Vocab Quiz</button>
+        <button class="nav-btn" id="btn-content" onclick="switchSection('content')">2. Content Quiz</button>
+        <button class="nav-btn" id="btn-reading" onclick="switchSection('reading')">3. Reading Test</button>
+    </div>
+
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="game-content"></div>
+</div>
+
+<script>
+    const vocabData = [
+        { q: "trumpet", ans: "トランペット", choices: ["トランペット", "ピアノ", "ギター", "ドラム"] },
+        { q: "practice", ans: "練習する", choices: ["練習する", "演奏する", "歌う", "踊る"] },
+        { q: "after school", ans: "放課後", choices: ["放課後", "週末", "夏休み", "昼休み"] },
+        { q: "guitar", ans: "ギター", choices: ["ギター", "バイオリン", "フルート", "ラッパ"] },
+        { q: "violin player", ans: "バイオリン奏者", choices: ["バイオリン奏者", "歌手", "指揮者", "ダンサー"] },
+        { q: "pianist", ans: "ピアニスト", choices: ["ピアニスト", "ギタリスト", "歌手", "ドラマー"] },
+        { q: "nice", ans: "素敵な・良い", choices: ["素敵な・良い", "大きい", "古い", "高い"] },
+        { q: "every week", ans: "毎週", choices: ["毎週", "毎日", "毎月", "毎年"] },
+        { q: "Gerald", ans: "ジェラルド", choices: ["ジェラルド", "ジェシカ", "ジョージ", "ベス"] },
+        { q: "musician", ans: "音楽家", choices: ["音楽家", "画家", "作家", "先生"] },
+        { q: "become", ans: "～になる", choices: ["～になる", "～に行く", "～を作る", "～を好む"] },
+        { q: "in May", ans: "5月に", choices: ["5月に", "6月に", "7月に", "8月に"] },
+        { q: "saw", ans: "見た", choices: ["見た", "聞いた", "言った", "行った"] },
+        { q: "about", ans: "～について", choices: ["～について", "～の後で", "～の横に", "～の上で"] },
+        { q: "school festival", ans: "文化祭・学園祭", choices: ["文化祭・学園祭", "体育祭", "入学式", "卒業式"] },
+        { q: "in July", ans: "7月に", choices: ["7月に", "5月に", "6月に", "8月に"] },
+        { q: "Jessica", ans: "ジェシカ", choices: ["ジェシカ", "ジェラルド", "ベス", "キャシー"] },
+        { q: "said", ans: "言った", choices: ["言った", "思った", "聞いた", "呼んだ"] },
+        { q: "should", ans: "～すべきだ", choices: ["～すべきだ", "～できる", "～かもしれない", "～したい"] },
+        { q: "students", ans: "生徒たち", choices: ["生徒たち", "先生たち", "親たち", "観客たち"] },
+        { q: "parents", ans: "両親", choices: ["両親", "友達", "先生", "兄弟"] },
+        { q: "nervous", ans: "緊張して", choices: ["緊張して", "驚いて", "嬉しくて", "幸せで"] },
+        { q: "audience", ans: "観客", choices: ["観客", "選手", "店員", "警察"] },
+        { q: "surprised", ans: "驚いた", choices: ["驚いた", "幸せな", "悲しい", "疲れた"] },
+        { q: "with", ans: "～と一緒に", choices: ["～と一緒に", "～なしで", "～の前で", "～に向かって"] },
+        { q: "celebrate", ans: "祝う", choices: ["祝う", "練習する", "歌う", "食べる"] }
+    ];
+
+    const contentData = [
+        { para: "Gerald enjoys (____) the trumpet.", q: "「ジェラルドはトランペットを演奏するのが好きだ。」となるよう、空欄を埋めなさい。", choices: ["playing", "play", "to play", "plays"], ans: "playing" },
+        { para: "His father plays the guitar in a band with a violin player and a pianist.", q: "お父さんのバンドはどういう構成ですか？", choices: ["ギター、バイオリン、ピアノの3人", "ギターとドラムの2人", "ピアノと歌の2人", "ギターだけのソロ"], ans: "ギター、バイオリン、ピアノの3人" },
+        { para: "The band plays at a nice restaurant every week.", q: "お父さんのバンドが演奏するのはどういう場所？いつ？", choices: ["素敵なレストランで、毎週", "学校のフェスティバルで、毎日", "ピザ屋で、5月に", "公園で、毎週"], ans: "素敵なレストランで、毎週" },
+        { para: "Gerald wants to become a musician like his father.", q: "ジェラルドの夢は？", choices: ["お父さんのような音楽家になること", "学校の先生になること", "ピザ職人になること", "バイオリン奏者になること"], ans: "お父さんのような音楽家になること" },
+        { para: "In May, Gerald saw a poster about a music performance for a school festival.", q: "ジェラルドはどんなポスターをみた？", choices: ["文化祭の音楽演奏に関するポスター", "トランペットの販売ポスター", "ピザ屋の開店ポスター", "夏休みの旅行ポスター"], ans: "文化祭の音楽演奏に関するポスター" },
+        { para: "Jessica said, 'You should play your trumpet at the festival!'", q: "ジェシカはジェラルドに何することを勧めた？", choices: ["フェスティバルで演奏すること", "毎日練習すること", "新しいラッパを買うこと", "ピザ屋に行くこと"], ans: "フェスティバルで演奏すること" },
+        { para: "In June, he (            ).", q: "「一生懸命練習した」にあたる英語は？", choices: ["practiced very hard", "played very well", "saw a poster", "decided to perform"], ans: "practiced very hard" },
+        { para: "At the festival, Gerald played one song.", q: "文化祭でジェラルドは何曲演奏した？", choices: ["1曲", "2曲", "たくさん", "0曲"], ans: "1曲" },
+        { para: "He was nervous, and he played the song too quickly.", q: "ジェラルドはどうして速く演奏しすぎてしまったのかな？", choices: ["緊張していたから", "急いで帰りたかったから", "速い曲だったから", "間違えたから"], ans: "緊張していたから" },
+        { para: "The audience enjoyed Gerald's performance.", q: "観客のジェラルドの演奏に対する反応は？", choices: ["演奏を楽しんでくれた", "速すぎると怒った", "静かに聞いていた", "何も思わなかった"], ans: "演奏を楽しんでくれた" },
+        { para: "Jessica said, 'Great job!' His father said, 'You played so well!'", q: "ジェシカとお父さんは何て言ってくれた？", choices: ["二人とも褒めてくれた", "二人とももっと練習しろと言った", "何も言わなかった", "ピザを食べようと言った"], ans: "二人とも褒めてくれた" },
+        { para: "Gerald was surprised.", q: "ジェラルドは何故驚いた？", choices: ["上手く演奏できなかったと思ったのに褒められたから", "お父さんがステージに来たから", "ピザ屋が閉まっていたから", "ジェシカが泣いていたから"], ans: "上手く演奏できなかったと思ったのに褒められたから" },
+        { para: "After the performance, he went to a pizza restaurant with Jessica and his parents to celebrate.", q: "演奏が終わった後、ジェラルドは何をした？", choices: ["ジェシカと両親とピザ屋にお祝いに行った", "一人で家に帰った", "お父さんのバンドの演奏を見た", "学校で友達と遊んだ"], ans: "ジェシカと両親とピザ屋にお祝いに行った" }
+    ];
+
+    const readingData = [
+        { para: "Gerald enjoys playing the trumpet. He practices every day after school. His father plays the guitar in a band with a violin player and a pianist. The band plays at a nice restaurant every week. Gerald wants to become a musician like his father.", q: "(31) What does Gerald's father play?", choices: ["The guitar.", "The trumpet.", "The violin.", "The piano."], ans: "The guitar." },
+        { para: "Gerald enjoys playing the trumpet. He practices every day after school. His father plays the guitar in a band with a violin player and a pianist. The band plays at a nice restaurant every week. Gerald wants to become a musician like his father.", q: "(32) What does Gerald want to do?", choices: ["See his favorite band.", "Play sports after school.", "Become a musician.", "Work at a restaurant."], ans: "Become a musician." },
+        { para: "In May, Gerald saw a poster about a music performance for a school festival. The festival was in July. Gerald's friend, Jessica, said, 'You should play your trumpet at the festival!' Gerald decided to perform. In June, he practiced very hard.", q: "(33) When did Gerald see the poster?", choices: ["In May.", "In June.", "In July.", "In August."], ans: "In May." },
+        { para: "At the festival, Gerald played one song. Many students and his parents were watching him. He was nervous, and he played the song too quickly. He thought, 'I didn't play well.'", q: "(34) During the performance at the festival, Gerald was", choices: ["nervous.", "surprised.", "happy.", "sleepy."], ans: "nervous." },
+        { para: "However, the audience enjoyed Gerald's performance. Jessica said, 'Great job!' His father said, 'You played so well!' Gerald was surprised. He became happy about his performance. After the performance, he went to a pizza restaurant with Jessica and his parents to celebrate.", q: "(35) What did Gerald do after the performance?", choices: ["He thanked his teachers.", "He went to Jessica's house.", "He called his parents.", "He went to a restaurant."], ans: "He went to a restaurant." }
+    ];
+
+    let currentSection = 'vocab';
+    let currentIndex = 0;
+    let score = 0;
+    let selectedChoice = null;
+    let hasMistake = false; // 現在の問題でミスをしたかのフラグ
+
+    function speak(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const uttr = new SpeechSynthesisUtterance(text);
+        uttr.lang = 'en-US';
+        uttr.rate = 0.9;
+        window.speechSynthesis.speak(uttr);
+    }
+
+    function switchSection(sec) {
+        currentSection = sec;
+        currentIndex = 0; score = 0;
+        document.getElementById('btn-vocab').classList.toggle('active', sec === 'vocab');
+        document.getElementById('btn-content').classList.toggle('active', sec === 'content');
+        document.getElementById('btn-reading').classList.toggle('active', sec === 'reading');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const content = document.getElementById('game-content');
+        content.innerHTML = "";
+        selectedChoice = null;
+        hasMistake = false; // フラグをリセット
+
+        const data = currentSection === 'vocab' ? vocabData : (currentSection === 'content' ? contentData : readingData);
+        const q = data[currentIndex];
+
+        if (currentSection === 'vocab') {
+            const display = document.createElement('div');
+            display.className = 'question-display';
+            display.innerHTML = `<span>${q.q}</span>`;
+            const sBtn = document.createElement('button');
+            sBtn.className = 'speaker-btn';
+            sBtn.innerHTML = '🔊';
+            sBtn.onclick = () => speak(q.q);
+            display.appendChild(sBtn);
+            content.appendChild(display);
+        } else {
+            const pBox = document.createElement('div');
+            pBox.className = 'passage-box';
+            pBox.textContent = q.para;
+            content.appendChild(pBox);
+            
+            const display = document.createElement('div');
+            display.className = 'question-display';
+            display.style.fontSize = "1.3rem"; // 設問の文字も少し大きく
+            display.style.textAlign = "left";
+            display.style.background = "#eee";
+            display.textContent = q.q;
+            content.appendChild(display);
+        }
+
+        const uiArea = document.createElement('div');
+        uiArea.id = 'ui-area';
+        content.appendChild(uiArea);
+
+        const grid = document.createElement('div'); 
+        grid.className = 'choice-grid';
+        const shuffled = [...q.choices].sort(() => Math.random() - 0.5);
+        shuffled.forEach(c => {
+            const btn = document.createElement('button'); 
+            btn.className = 'choice-card-btn'; 
+            btn.textContent = c;
+            btn.onclick = () => {
+                document.querySelectorAll('.choice-card-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected'); 
+                selectedChoice = c;
+                document.getElementById('checkBtn').style.display = "block";
+            };
+            grid.appendChild(btn);
+        });
+        uiArea.appendChild(grid);
+
+        document.getElementById('progressBar').style.width = `${(currentIndex / data.length) * 100}%`;
+        
+        const checkBtn = document.createElement('button');
+        checkBtn.id = "checkBtn"; checkBtn.className = "action-btn";
+        checkBtn.style.display = "none"; checkBtn.style.background = "#2e7d32";
+        checkBtn.textContent = "回答をチェック";
+        checkBtn.onclick = handleCheck;
+        content.appendChild(checkBtn);
+    }
+
+    function handleCheck() {
+        const data = currentSection === 'vocab' ? vocabData : (currentSection === 'content' ? contentData : readingData);
+        const q = data[currentIndex];
+        if (selectedChoice === q.ans) {
+            // 一度も間違えていない場合のみスコアを加算
+            if (!hasMistake) {
+                score++;
+            }
+            showFeedback();
+        } else {
+            hasMistake = true; // ミスを記録
+            alert("Try again! もう一度選んでみてね。");
+        }
+    }
+
+    function showFeedback() {
+        const ui = document.getElementById('ui-area');
+        ui.innerHTML = `<h2 class="correct-text">正解！ ✨</h2>`;
+        document.getElementById('checkBtn').style.display = "none";
+        
+        const nextBtn = document.createElement('button');
+        nextBtn.className = "action-btn"; 
+        nextBtn.style.background = "#0288d1";
+        nextBtn.textContent = "次の問題へ";
+        nextBtn.onclick = () => {
+            currentIndex++;
+            const data = currentSection === 'vocab' ? vocabData : (currentSection === 'content' ? contentData : readingData);
+            if (currentIndex < data.length) loadQuestion(); else showFinalResult();
+        };
+        document.getElementById('game-content').appendChild(nextBtn);
+    }
+
+    function showFinalResult() {
+        const data = currentSection === 'vocab' ? vocabData : (currentSection === 'content' ? contentData : readingData);
+        document.getElementById('progressBar').style.width = "100%";
+        
+        let reportHtml = "";
+        if (currentSection !== 'reading') {
+            reportHtml = `
+                <div style="background:#f0f7ff; padding:20px; border-radius:15px; margin-top:20px; border: 1px solid #ccc;">
+                    <h3>Tamaki先生に報告する</h3>
+                    <input type="text" id="userName" placeholder="名前を入力してね" style="padding:10px; width:80%; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;"><br>
+                    <button class="action-btn report-btn" onclick="sendReport()">メールで報告 📧</button>
+                </div>
+            `;
+        }
+
+        const isFullScore = score === data.length;
+        const resultMsg = isFullScore ? "すごい！満点だよ！🌟" : "惜しい！次は満点を目指そう！💪";
+
+        document.getElementById('game-content').innerHTML = `
+            <div style="text-align:center; padding: 20px;">
+                <h2 style="font-size:2rem;">🎉 Section Clear!</h2>
+                <p style="font-size:1.8rem; font-weight:bold; color:var(--primary-blue);">${score} / ${data.length}</p>
+                <p style="font-size:1.2rem; margin-bottom:20px;">${resultMsg}</p>
+                ${reportHtml}
+                <button class="action-btn" style="background:#0288d1; margin-top:20px;" onclick="switchSection('${currentSection}')">最初から解き直す</button>
+            </div>
+        `;
+    }
+
+    function sendReport() {
+        const name = document.getElementById('userName').value || "生徒";
+        const data = currentSection === 'vocab' ? vocabData : contentData;
+        const subject = encodeURIComponent(`英検4級 Gerald物語 (${currentSection}) 結果報告`);
+        const body = encodeURIComponent(`Tamaki先生へ\n\n「The School Performance」の${currentSection}を完了しました！\n\n名前: ${name}\nスコア: ${score} / ${data.length}`);
+        window.location.href = `mailto:tamaki@eigostudio-stepforward.com?subject=${subject}&body=${body}`;
+    }
+
+    window.onload = loadQuestion;
+</script>
+</body>
+</html>
